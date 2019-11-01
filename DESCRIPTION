@@ -1,0 +1,18 @@
+Package: PETr
+Type: Package
+Title: PET
+Version: 0.1.0
+Authors@R: as.person(c(
+      "Colin Harpham <.harpham@uea.ac.uk> [aut,cre]",
+      "KNMI [cph]"))
+Maintainer: ECAD <eca@knmi.nl>
+Depends:
+    R (>= 2.12.0)
+Imports:
+    ncdf4 (>= 1.10)
+Description: Estimates potential evapotranspiration using the Penman-Monteith method.
+    The climate variables required are Tmax, Tmin, vapour pressure, wind speed, sunshine hours OR radiation.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.0
