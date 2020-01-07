@@ -9,7 +9,7 @@ dewpoint_to_humidity(dp = NA, t = NA)
 \arguments{
 \item{dp}{= Dewpoint    (degrees celsius)}
 
-\item{t}{= Temperature mean    (degrees Celcious)}
+\item{t}{= Temperature mean    (degrees celcius)}
 }
 \value{
 A vector containing the daily vp

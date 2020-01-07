@@ -1,11 +1,11 @@
 #' Potential Evapotranspiration
-#' @description This function takes a dataframe object as input and computes PET.
+#' @description This function takes a dataframe object as input and computes PET using Makkink's method.
 #'
 #' @param indat = dataframe containing the input variables
 #'
 #' @return A vector containing the daily Potential EvapoTranspiration (mm/day)
 #' @examples
-#' pet_penmon(indat)
+' pet_penmon(indat)
 #'
 #' Where the dataframe "indat" contains the following variables:
 #'
@@ -15,24 +15,18 @@
 #' vp  = Vapour pressure    (hPa)
 #' rh =  Relative humidity  (%)
 #' dp =  Dewpoint           (degrees Celsius)
-#' ws  = Wind speed at 10m  (m/s)
-#' either ss or rs is passed, but not both
-#' ss  = Sunshine duration  (0-24 hours)
-#' cl  = Cloudiness         (0-1)
-#' cl is optional for use with ss, if unavailble cl is estimated
 #' rs  = radiation          (kwh/m^2)
-#' Also rquired is the latitude and longitude
+#' Also rquired is the latitude and longitude (for land sea mask)
 #' lat = Latitude  (degrees)
 #' lons = Longitude (degrees)
-#' Elevation (needed) is retrieved from the PETr internal file "data/elev_dat.rda" which contains data from:
-#' http://www.ecad.eu/download/ensembles/data/Grid_0.1deg_reg_ensemble/elev_ens_0.1deg_reg_v17.0e.nc
+#'
 #' Missing values should be converted to NA
 #'
 #' @export
 
-pet_penmon <- function(indat) {
+pet_priestley_taylor <- function(indat) {
   data("elev_dat", package="PETr")
-#browser()
+#  browser()
   lat <- indat$lat
   lon <- indat$lon
   # lat index
@@ -48,27 +42,6 @@ pet_penmon <- function(indat) {
     pet <- array(dim=ndat, NA)
     return(pet)
   }
-  # calc day count
-  if(is.null(indat$jd))
-  {
-    jd <- as.POSIXlt(indat$tmax.dates)$yday + 1
-  } else {
-    jd <- indat$jd
-  }
-
-  # real ssf      # Sunshine factor
-  # real slrd     # Solar declination
-  # real snst     # Sunset hour angle
-  # real cos_snst # Cosinus of (Sunset hour angle)
-  # real dr       # Relative distance Earth to Sun
-  # real dter     # Daily total extraterrestrial radiation
-  # real dvp      # Slope of the vapour pressure
-  # real tflux    # Daily temperature fluctuations
-  # real rnet     # Net radiation
-  # real dyln     # Day length
-  # real psy      # Psychrometric constant set to the same as in SWURVE 0.067 kPaC-1
-
-
   # check whether vp, rh or dp are present
   if (is.null(indat$vp) && !is.null(indat$rh)) {
     # estimate vp from rh
@@ -84,19 +57,24 @@ pet_penmon <- function(indat) {
   }  else if (!is.null(vp)) {
     vp <- indat$vp
   }
-
-  # check for pressence of ss and cl
-  if (is.null(indat$ss)) {
-    ss_pres <- FALSE
+  # calc day count
+  if(is.null(indat$jd))
+  {
+    jd <- as.POSIXlt(indat$tmax.dates)$yday + 1
   } else {
-    ss_pres <- TRUE
+    jd <- indat$jd
   }
-
-  if (is.null(indat$cl)) {
-    cld_pres <- FALSE
-  } else {
-    cld_pres <- TRUE
-  }
+  # real ssf      # Sunshine factor
+  # real slrd     # Solar declination
+  # real snst     # Sunset hour angle
+  # real cos_snst # Cosinus of (Sunset hour angle)
+  # real dr       # Relative distance Earth to Sun
+  # real dter     # Daily total extraterrestrial radiation
+  # real dvp      # Slope of the vapour pressure
+  # real tflux    # Daily temperature fluctuations
+  # real rnet     # Net radiation
+  # real dyln     # Day length
+  # real psy      # Psychrometric constant set to the same as in SWURVE 0.067 kPaC-1
 
   ptm <- array(dim=ndat)
   ptm[1] <- tm[1]
@@ -109,10 +87,6 @@ pet_penmon <- function(indat) {
   dvp <- (4099.0 * vptm) / (tm + 237.3)^2.0
   tflux <- 0.38 * (tm - ptm)
   psy <- 0.067
-  # estimate 2m ws
-  wnf <- log((2.0 - 0.08) / 0.015)
-  wnf <- wnf / log((10.0 - 0.08) / 0.015)
-  wn2m <- wnf * indat$ws
   # convert lat to radians
   latr <- lat * (pi / 180.0)
   # Solar declination
@@ -132,44 +106,23 @@ pet_penmon <- function(indat) {
   # Daily total extraterrestrial radiation
   dter <- 37.6 * dr * (snst * sin(latr) * sin(slrd) + cos(latr) * cos(slrd) * sin(snst))
 
-  cl <- array(dim=length(indat$tmax))
-  if(ss_pres) {
-
-    if (!cld_pres) {
-      # estimate cloudiness (cl)
-      dyln <- 7.64 * snst
-      ss_gt <- which(indat$ss > dyln)
-      indat$ss[ss_gt] <- dyln[ss_gt]
-      dyln_zero <- which(dyln < 0.000001)
-      dyln_nonzero <- which(dyln >= 0.000001)
-      cl[dyln_zero] <- 1.0
-      cl[dyln_nonzero] <- 1.0 - indat$ss[dyln_nonzero] / dyln[dyln_nonzero]
-    }
-    ssf <- 1.0 - cl
-
-    rns <- 0.77 * (0.25 + (0.50 * (ssf))) * dter
-    rnl <- sigma * (0.9 * (ssf) + 0.1) * (0.34-0.14*sqrt(avp)) * (ktmin^4.0 + ktmax^4.0)
-  } else {
-
-    Q <- indat$rs
-    rso <- (0.75 + (2 * 10^-5) * elev) * dter
-    rns <- (1 - a) * Q
-    rs_div_rso <- Q / rso
-    rs_div_rso[rs_div_rso > 1.0] <- 1.0
-    rnl <- sigma * (0.34 - 0.14 * sqrt(avp)) * (ktmax^4 + ktmin^4) * (1.35 * rs_div_rso - 0.35)
-    rnl[rnl < 0] <- 0
-  }
+  Q <- indat$rs
+  rso <- (0.75 + (2 * 10^-5) * elev) * dter
+  rns <- (1 - a) * Q
+  rs_div_rso <- Q / rso
+  rs_div_rso[rs_div_rso > 1.0] <- 1.0
+  rnl <- sigma * (0.34 - 0.14 * sqrt(avp)) * (ktmax^4 + ktmin^4) * (1.35 * rs_div_rso - 0.35)
+  rnl[rnl < 0] <- 0
+  dpsy <- dvp / (dvp+psy)
+  # net incoming shortwave radiation
+  rns <- (1 - a) * Q
   # Net radiation
   rnet <- rns - rnl
-  vptmin <- 0.1 * vapour_pressure(indat$tmin)
-  vptmax <- 0.1 * vapour_pressure(indat$tmax)
-  vpd <- ((vptmax + vptmin) / 2.0) - avp
-  pet <- 0.408 * dvp * (rnet - tflux)
-  pet <- pet + (900.0 / (tm + 273.16)) * (psy * wn2m * vpd)
-  pet <- pet / (dvp + (psy * (1.0 + (wn2m * 0.34))))
 
-  pet[pet < 0] <- 0
-  return(pet)
+#  C <- 1.26  # original constant
+  C <- 1.115
+#  pet_pt = 1.26*dpsy*(rnet-tflux)/2.77 #/2.45
+  pet_pt = C*dpsy*(rnet-tflux)/2.45
+
+  return(pet_pt)
 }
-
-

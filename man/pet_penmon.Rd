@@ -28,9 +28,9 @@ rh =  Relative humidity  (\%)
 dp =  Dewpoint           (degrees Celsius)
 ws  = Wind speed at 10m  (m/s)
 either ss or rs is passed, but not both
-sun  = Sunshine duration  (0-24 hours)
+ss  = Sunshine duration  (0-24 hours)
 cl  = Cloudiness         (0-1)
-cl is optional for use with sun, if unavailble cl is estimated
+cl is optional for use with ss, if unavailble cl is estimated
 rs  = radiation          (kwh/m^2)
 Also rquired is the latitude and longitude
 lat = Latitude  (degrees)
