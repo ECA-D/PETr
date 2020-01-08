@@ -22,7 +22,7 @@ Where the dataframe "indat" contains the following variables:
 
 tmin  = Temperature min    (degrees Celsius)
 tmax  = Temperature max    (degrees Celsius)
-rs  = radiation          (kwh/m^2)
+rs  = radiation          (MJ/m^2)
 
 Missing values should be converted to NA
 

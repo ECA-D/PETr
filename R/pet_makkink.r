@@ -11,14 +11,13 @@
 #'
 #' tmin  = Temperature min    (degrees Celsius)
 #' tmax  = Temperature max    (degrees Celsius)
-#' rs  = radiation          (kwh/m^2)
+#' rs  = radiation          (MJ/m^2)
 #'
 #' Missing values should be converted to NA
 #'
 #' @export
 
 pet_makkink <- function(indat) {
-#  browser()
   data("elev_dat", package="PETr")
   tm <- rowMeans(cbind(indat$tmin, indat$tmax))
   ndat <- length(tm)

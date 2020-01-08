@@ -31,7 +31,7 @@ either ss or rs is passed, but not both
 ss  = Sunshine duration  (0-24 hours)
 cl  = Cloudiness         (0-1)
 cl is optional for use with ss, if unavailble cl is estimated
-rs  = radiation          (kwh/m^2)
+rs  = radiation          (MJ/m^2)
 Also rquired is the latitude and longitude
 lat = Latitude  (degrees)
 lons = Longitude (degrees)

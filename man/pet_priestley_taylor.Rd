@@ -16,13 +16,20 @@ A vector containing the daily Potential EvapoTranspiration (mm/day)
 This function takes a dataframe object as input and computes PET using Makkink's method.
 }
 \examples{
-pet_makkink(indat)
+pet_priestley_taylor(indat)
 
 Where the dataframe "indat" contains the following variables:
 
 tmin  = Temperature min    (degrees Celsius)
 tmax  = Temperature max    (degrees Celsius)
-rs  = radiation          (kwh/m^2)
+only one of the following variables (vp OR rh OR dp) are to be passed
+vp  = Vapour pressure    (hPa)
+rh =  Relative humidity  (\%)
+dp =  Dewpoint           (degrees Celsius)
+rs  = radiation          (MJ/m^2)
+Also rquired is the latitude and longitude (for land sea mask)
+lat = Latitude  (degrees)
+lons = Longitude (degrees)
 
 Missing values should be converted to NA
 

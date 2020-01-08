@@ -20,7 +20,7 @@
 #' ss  = Sunshine duration  (0-24 hours)
 #' cl  = Cloudiness         (0-1)
 #' cl is optional for use with ss, if unavailble cl is estimated
-#' rs  = radiation          (kwh/m^2)
+#' rs  = radiation          (MJ/m^2)
 #' Also rquired is the latitude and longitude
 #' lat = Latitude  (degrees)
 #' lons = Longitude (degrees)
@@ -32,7 +32,6 @@
 
 pet_penmon <- function(indat) {
   data("elev_dat", package="PETr")
-#browser()
   lat <- indat$lat
   lon <- indat$lon
   # lat index

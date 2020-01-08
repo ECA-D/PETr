@@ -5,7 +5,7 @@
 #'
 #' @return A vector containing the daily Potential EvapoTranspiration (mm/day)
 #' @examples
-' pet_penmon(indat)
+#' pet_priestley_taylor(indat)
 #'
 #' Where the dataframe "indat" contains the following variables:
 #'
@@ -15,7 +15,7 @@
 #' vp  = Vapour pressure    (hPa)
 #' rh =  Relative humidity  (%)
 #' dp =  Dewpoint           (degrees Celsius)
-#' rs  = radiation          (kwh/m^2)
+#' rs  = radiation          (MJ/m^2)
 #' Also rquired is the latitude and longitude (for land sea mask)
 #' lat = Latitude  (degrees)
 #' lons = Longitude (degrees)
@@ -121,7 +121,6 @@ pet_priestley_taylor <- function(indat) {
 
 #  C <- 1.26  # original constant
   C <- 1.115
-#  pet_pt = 1.26*dpsy*(rnet-tflux)/2.77 #/2.45
   pet_pt = C*dpsy*(rnet-tflux)/2.45
 
   return(pet_pt)
