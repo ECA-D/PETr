@@ -31,6 +31,7 @@
 #' @export
 
 pet_penmon <- function(indat) {
+#  browser()
   data("elev_dat", package="PETr")
   lat <- indat$lat
   lon <- indat$lon
@@ -82,6 +83,8 @@ pet_penmon <- function(indat) {
 
   }  else if (!is.null(vp)) {
     vp <- indat$vp
+  } else {
+    stop("Terminating - missing imput variables")
   }
 
   # check for pressence of ss and cl
@@ -107,7 +110,10 @@ pet_penmon <- function(indat) {
   vptm <- 0.1 * vapour_pressure(tm)
   dvp <- (4099.0 * vptm) / (tm + 237.3)^2.0
   tflux <- 0.38 * (tm - ptm)
-  psy <- 0.067
+  # psy calc
+  lambda <- 2.45
+  p <- 101.3*((293-(0.0065*elev))/293)^5.26
+  psy <- 0.00163*(p/lambda)
   # estimate 2m ws
   wnf <- log((2.0 - 0.08) / 0.015)
   wnf <- wnf / log((10.0 - 0.08) / 0.015)

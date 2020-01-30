@@ -56,6 +56,8 @@ pet_priestley_taylor <- function(indat) {
 
   }  else if (!is.null(vp)) {
     vp <- indat$vp
+  }else {
+    stop("Terminating - missing imput variables")
   }
   # calc day count
   if(is.null(indat$jd))
@@ -86,7 +88,10 @@ pet_priestley_taylor <- function(indat) {
   vptm <- 0.1 * vapour_pressure(tm)
   dvp <- (4099.0 * vptm) / (tm + 237.3)^2.0
   tflux <- 0.38 * (tm - ptm)
-  psy <- 0.067
+  # psy calc
+  lambda <- 2.45
+  p <- 101.3*((293-(0.0065*elev))/293)^5.26
+  psy <- 0.00163*(p/lambda)
   # convert lat to radians
   latr <- lat * (pi / 180.0)
   # Solar declination

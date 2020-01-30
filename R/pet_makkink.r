@@ -38,7 +38,10 @@ pet_makkink <- function(indat) {
   Q <- indat$rs
   vptm <- 0.1 * vapour_pressure(tm)
   dvp <- (4099.0 * vptm) / (tm + 237.3)^2.0
-  psy <- 0.067
+  # psy calc
+  lambda <- 2.45
+  p <- 101.3*((293-(0.0065*elev))/293)^5.26
+  psy <- 0.00163*(p/lambda)
   dpsy <- dvp / (dvp+psy)
   pet_mk <- 0.61 * (dpsy * Q/2.45) - 0.12
 
