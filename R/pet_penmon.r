@@ -23,7 +23,7 @@
 #' rs  = radiation          (MJ/m^2)
 #' Also rquired is the latitude and longitude
 #' lat = Latitude  (degrees)
-#' lons = Longitude (degrees)
+#' lon = Longitude (degrees)
 #' Elevation (needed) is retrieved from the PETr internal file "data/elev_dat.rda" which contains data from:
 #' http://www.ecad.eu/download/ensembles/data/Grid_0.1deg_reg_ensemble/elev_ens_0.1deg_reg_v17.0e.nc
 #' Missing values should be converted to NA
@@ -31,7 +31,6 @@
 #' @export
 
 pet_penmon <- function(indat) {
-#  browser()
   data("elev_dat", package="PETr")
   lat <- indat$lat
   lon <- indat$lon
@@ -43,11 +42,11 @@ pet_penmon <- function(indat) {
   ndat <- length(tm)
 
   elev <- elev_dat[lon_index, lat_index]
-  if(is.na(elev))
-  {
-    pet <- array(dim=ndat, NA)
-    return(pet)
-  }
+    if(is.na(elev))
+    {
+      pet <- array(dim=ndat, NA)
+      return(pet)
+    }
   # calc day count
   if(is.null(indat$jd))
   {

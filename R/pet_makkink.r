@@ -44,6 +44,6 @@ pet_makkink <- function(indat) {
   psy <- 0.00163*(p/lambda)
   dpsy <- dvp / (dvp+psy)
   pet_mk <- 0.65 * (dpsy * Q/2.45)
-
+  pet_mk[pet_mk < 0] <- 0
   return(pet_mk)
 }

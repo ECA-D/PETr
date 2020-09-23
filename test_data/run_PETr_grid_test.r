@@ -13,8 +13,7 @@ if(file.exists(out.file)){
   file.remove(out.file)
 }
 input.files <- c(paste0(in.dir,"tn_0.25deg_regular_1979-2018_sub.nc"),
-                 paste0(in.dir,"tx_0.25deg_regular_1979-2018_sub.nc"),
-                 paste0(in.dir,"dp_0.25deg_regular_1979-2018_sub.nc"),
+                 paste0(in.dir,"tx_0.25deg_regular_1979-2018_sub.nc"),                 paste0(in.dir,"dp_0.25deg_regular_1979-2018_sub.nc"),
                  paste0(in.dir,"ss_0.25deg_regular_1979-2018_sub.nc"),
                  paste0(in.dir,"ws_0.25deg_regular_1979-2018_sub.nc"))
 

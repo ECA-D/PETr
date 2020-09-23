@@ -127,6 +127,6 @@ pet_priestley_taylor <- function(indat) {
 #  C <- 1.26  # original constant
   C <- 1.115
   pet_pt = C*dpsy*(rnet-tflux)/2.45
-
+  pet_pt[pet_pt < 0] <- 0
   return(pet_pt)
 }
